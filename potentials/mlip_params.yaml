@@ -1,0 +1,7 @@
+parameters:
+  mlip_type: "16g"
+  train_energy_weight: 1
+  train_force_weight: 0.01
+  train_stress_weight: 0.001
+  train_iteration_limit: 6000
+
