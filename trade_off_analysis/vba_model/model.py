@@ -149,6 +149,14 @@ def high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon):
     )
 
 
+def low_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon):
+    """Low stress/high temperature"""
+    return tau_zero * np.exp(
+        -1 / 0.55 * (kB * temperature / ene_b) *
+        np.log(epsilon_zero / epsilon)
+    )
+
+
 def calculate_average_mu(c_44, c_11, c_12):
     """
     Calculate the average shear modulus (mu) using the Voigt-Reuss-Hill approximation.
@@ -274,7 +282,7 @@ def calc_vba_misfits(concs, eles):
     return v_misfit, volume
 
 
-def calc_vba_tau_sss(concs, eles):
+def calc_vba_tau_sss(concs, eles, temperature = 300):
     concs = np.array(concs)
     eles = np.array(eles)
 
@@ -301,7 +309,17 @@ def calc_vba_tau_sss(concs, eles):
 
     ene_b = calculate_delta_e_b(e_prefactor, alpha, mu, nu, delta, burgers)
 
-    tau = high_stress_tau_yield(tau_zero, 300, ene_b, epsilon_zero, epsilon) * 1000
+    tau_ht = high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon) * 1000
+    tau_lt = high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon) * 1000
+
+    factor = tau_ht / tau_zero
+
+    if factor > 0.5:
+        tau = tau_ht
+    else:
+        tau = tau_lt
+
+
 
     if np.isnan(tau):
         tau = 0.0
