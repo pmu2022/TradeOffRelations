@@ -292,7 +292,14 @@ def calc_vba_tau_sss(concs, eles, temperature=300):
 
 def compute_vba_usf(concs, eles, p_v1, p_v2):
     """
-    Important: This will return \gamma * a^2
+
+    This will return \gamma * a^2
+
+    :param concs:
+    :param eles:
+    :param p_v1:
+    :param p_v2:
+    :return:
     """
     k1, k2 = 0.66811995, 0.83232495
     energy = 0
@@ -322,8 +329,16 @@ def compute_vba_usf(concs, eles, p_v1, p_v2):
 
 def compute_vba_surf(concs, eles, p_v1, p_v2):
     """
+
     Important: This will return \gamma * a^2
+
+    :param concs:
+    :param eles:
+    :param p_v1:
+    :param p_v2:
+    :return:
     """
+
     k1, k2 = 0.67591635, 1.00480069
     energy = 0
 
