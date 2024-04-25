@@ -194,7 +194,7 @@ def stroh_formalism(C):
 
     for i in range(3):
         if np.absolute(np.real(p[i] - p[i + 3])) > 1e-6 * np.absolute(
-                np.real(p[i])
+            np.real(p[i])
         ) and p.absolute(np.imag(p[i] - p[i + 3])) > 1e-6 * np.absolute(np.imag(p[i])):
             raise TypeError(
                 "wrong order of p entries; check it manually and consult "

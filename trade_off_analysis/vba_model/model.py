@@ -2,6 +2,7 @@
 # Copyright (c) Materials Center Leoben Forschung GmbH (MCL)
 
 import numpy as np
+from numpy.polynomial import Polynomial
 from scipy.constants import Boltzmann as kB
 
 __author__ = "Franco Moitzi"
@@ -16,11 +17,11 @@ A_to_m = 1e-10
 prefactor = 0.04
 e_prefactor = 2.0
 alpha = 1.0 / 12.0
-epsilon_zero = 10 ** 4
-epsilon = 10 ** -4
+epsilon_zero = 10**4
+epsilon = 10**-4
 tau_prefactor = 0.6
 
-elements = ['Ti', 'Cr', 'Zr', 'Nb', 'Mo', 'Ta', 'W', 'V', 'Hf']
+elements = ["Ti", "Cr", "Zr", "Nb", "Mo", "Ta", "W", "V", "Hf"]
 valences = np.array([2, 4, 2, 3, 4, 3, 4, 3, 2], dtype=int)
 rows = np.array([3, 3, 4, 4, 4, 5, 5, 3, 5], dtype=int)
 
@@ -35,8 +36,72 @@ p_v12 = np.poly1d([-71.30270617, 485.66738787, -808.43731851])
 p_v13 = np.poly1d([19.75260076, -73.42767866, 20.46637474])
 
 p_v21 = np.poly1d([11.62689882, -53.08459983, 130.52713348, -102.14263859])
-p_v22 = np.poly1d([112.35643006, -874.28133674, 2094.44972552, - 1353.36934647])
-p_v23 = np.poly1d([86.0427864, -771.96067217, 2315.77910625, - 2052.15884144])
+p_v22 = np.poly1d([112.35643006, -874.28133674, 2094.44972552, -1353.36934647])
+p_v23 = np.poly1d([86.0427864, -771.96067217, 2315.77910625, -2052.15884144])
+
+p_v1_usf_110 = Polynomial(
+    [-199540.9903582537, -166517.6786979029, 50360.21709900939, -6282.1685303784825]
+)
+p_v2_usf_110 = Polynomial(
+    [
+        119888.67564481612,
+        124045.00938902206,
+        82708.72038394239,
+        -5325.829935308056,
+        -62124.45409620083,
+        35582.89204596816,
+        -7607.4648905165795,
+        580.9613190059765,
+    ]
+)
+
+p_v1_usf_112 = Polynomial(
+    [-208796.05776988395, -172986.67130174456, 56282.85035216748, -6906.279430472936]
+)
+p_v2_usf_112 = Polynomial(
+    [
+        115848.644508765,
+        120808.42446427354,
+        82422.40224098787,
+        -1435.8478463239971,
+        -58099.87380163428,
+        30615.62755119337,
+        -6080.71201956732,
+        431.97343145742326,
+    ]
+)
+
+p_v1_surf_100 = Polynomial(
+    [-2779612.6252152626, -2266443.3992570587, 853912.2359085882, -97964.50079889901]
+)
+p_v2_surf_100 = Polynomial(
+    [
+        1731577.5238659394,
+        1766785.8854020515,
+        1127657.1833448831,
+        -180313.23927842965,
+        -964338.7283723322,
+        589338.836040706,
+        -130513.6582106863,
+        10204.35829496036,
+    ]
+)
+
+p_v1_surf_110 = Polynomial(
+    [-2755798.3732637535, -2255790.7591520455, 821701.9986628644, -93283.23190799657]
+)
+p_v2_surf_110 = Polynomial(
+    [
+        1721930.450397759,
+        1759054.244517196,
+        1127086.1775099018,
+        -170419.45930669326,
+        -953001.5264671147,
+        579995.292730788,
+        -128343.82738247578,
+        10041.7975876688,
+    ]
+)
 
 
 def width_corr_dict(elem, k1, k2):
@@ -49,8 +114,13 @@ def calculate_tau_yield_zero(prefactor, alpha, mu, nu, delta):
     """
     Calculates the tau yield
     """
-    return (prefactor * alpha ** (-1.0 / 3.0) * mu * ((1 + nu) / (1 - nu)) ** (
-            4.0 / 3.0) * delta ** (4.0 / 3.0))
+    return (
+        prefactor
+        * alpha ** (-1.0 / 3.0)
+        * mu
+        * ((1 + nu) / (1 - nu)) ** (4.0 / 3.0)
+        * delta ** (4.0 / 3.0)
+    )
 
 
 def calculate_delta_e_b(prefactor, alpha, mu, nu, delta, burgers):
@@ -59,18 +129,24 @@ def calculate_delta_e_b(prefactor, alpha, mu, nu, delta, burgers):
     """
 
     burgers_converted = burgers * A_to_m  # Units m
-    mu_converted = mu * 10 ** 9  # Pascal
+    mu_converted = mu * 10**9  # Pascal
 
-    return (prefactor * alpha ** (
-            1.0 / 3.0) * mu_converted * burgers_converted ** 3.0 * (
-                    (1 + nu) / (1 - nu)) ** (2.0 / 3.0)  # no units
-            * delta ** (2.0 / 3.0))  # no units
+    return (
+        prefactor
+        * alpha ** (1.0 / 3.0)
+        * mu_converted
+        * burgers_converted**3.0
+        * ((1 + nu) / (1 - nu)) ** (2.0 / 3.0)  # no units
+        * delta ** (2.0 / 3.0)
+    )  # no units
 
 
 def high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon):
     """High stress/lower temperature"""
-    return tau_zero * (1.0 - ((kB * temperature / ene_b) * np.log(
-        epsilon_zero / epsilon)) ** (2.0 / 3.0))
+    return tau_zero * (
+        1.0
+        - ((kB * temperature / ene_b) * np.log(epsilon_zero / epsilon)) ** (2.0 / 3.0)
+    )
 
 
 def calculate_average_mu(c_44, c_11, c_12):
@@ -126,8 +202,11 @@ def calc_vba_elastic(concs, eles):
             nv2 = valences_dict[e2]
 
             wab = np.sqrt(
-                widths_dict[e1] * width_corr_dict(e1, k1, k2) * width_corr_dict(
-                    e2, k1, k2) * widths_dict[e2])
+                widths_dict[e1]
+                * width_corr_dict(e1, k1, k2)
+                * width_corr_dict(e2, k1, k2)
+                * widths_dict[e2]
+            )
 
             nv = (nv1 + nv2) / 2.0
 
@@ -140,14 +219,24 @@ def calc_vba_elastic(concs, eles):
 
 def calc_vba_misfits(concs, eles):
     k1 = 8.019e-01
-    k2 = 1.247e+00
+    k2 = 1.247e00
 
     v1 = np.poly1d([1.15149047, 8.99185795])
     v2 = np.poly1d([0.22283889, -2.67231669, -3.74311463])
 
     widths = np.array(
-        [4.467e+00, 3.887e+00, 7.001e+00, 6.522e+00, 5.639e+00, 8.275e+00,
-         7.245e+00, 4.797e+00, 3.997e+00])
+        [
+            4.467e00,
+            3.887e00,
+            7.001e00,
+            6.522e00,
+            5.639e00,
+            8.275e00,
+            7.245e00,
+            4.797e00,
+            3.997e00,
+        ]
+    )
 
     widths_dict = {e: v for e, v in zip(elements, widths)}
 
@@ -193,8 +282,7 @@ def calc_vba_tau_sss(concs, eles):
 
     misfit_volumes, equilibrium_volume = calc_vba_misfits(concs[args], eles[args])
 
-    delta = np.sqrt(np.sum(concs[args] @ misfit_volumes ** 2)) / (
-        equilibrium_volume)
+    delta = np.sqrt(np.sum(concs[args] @ misfit_volumes**2)) / (equilibrium_volume)
 
     burgers = np.cbrt(2.0 * equilibrium_volume) * np.sqrt(3) / 2
 
@@ -209,13 +297,11 @@ def calc_vba_tau_sss(concs, eles):
     mu = calculate_average_mu(c44, c11, c12)
     nu = calculate_average_nu(bulkmodulus, mu)
 
-    tau_zero = calculate_tau_yield_zero(prefactor, alpha, mu, nu,
-                                        delta) * tau_prefactor
+    tau_zero = calculate_tau_yield_zero(prefactor, alpha, mu, nu, delta) * tau_prefactor
 
     ene_b = calculate_delta_e_b(e_prefactor, alpha, mu, nu, delta, burgers)
 
-    tau = high_stress_tau_yield(tau_zero, 300, ene_b, epsilon_zero,
-                                epsilon) * 1000
+    tau = high_stress_tau_yield(tau_zero, 300, ene_b, epsilon_zero, epsilon) * 1000
 
     if np.isnan(tau):
         tau = 0.0
@@ -224,3 +310,63 @@ def calc_vba_tau_sss(concs, eles):
     mf[args] = misfit_volumes
 
     return np.concatenate(([tau], [nu], [mu], mf, [delta]))
+
+
+def compute_vba_usf(concs, eles, p_v1, p_v2):
+    """
+    Important: This will return \gamma * a^2
+    """
+    k1, k2 = 0.66811995, 0.83232495
+    energy = 0
+
+    for c, e in zip(concs, eles):
+        nv1 = valences_dict[e]
+        energy += c * p_v1(nv1) * widths_dict[e] * width_corr_dict(e, k1, k2)
+
+    for c1, e1 in zip(concs, eles):
+        for c2, e2 in zip(concs, eles):
+            nv1 = valences_dict[e1]
+            nv2 = valences_dict[e2]
+
+            wij = np.sqrt(
+                widths_dict[e1]
+                * width_corr_dict(e1, k1, k2)
+                * width_corr_dict(e2, k1, k2)
+                * widths_dict[e2]
+            )
+
+            nv = (nv1 + nv2) / 2.0
+
+            energy += c1 * c2 * p_v2(nv) * wij
+
+    return energy
+
+
+def compute_vba_surf(concs, eles, p_v1, p_v2):
+    """
+    Important: This will return \gamma * a^2
+    """
+    k1, k2 = 0.67591635, 1.00480069
+    energy = 0
+
+    for c, e in zip(concs, eles):
+        nv1 = valences_dict[e]
+        energy += c * p_v1(nv1) * widths_dict[e] * width_corr_dict(e, k1, k2)
+
+    for c1, e1 in zip(concs, eles):
+        for c2, e2 in zip(concs, eles):
+            nv1 = valences_dict[e1]
+            nv2 = valences_dict[e2]
+
+            wij = np.sqrt(
+                widths_dict[e1]
+                * width_corr_dict(e1, k1, k2)
+                * width_corr_dict(e2, k1, k2)
+                * widths_dict[e2]
+            )
+
+            nv = (nv1 + nv2) / 2.0
+
+            energy += c1 * c2 * p_v2(nv) * wij
+
+    return energy

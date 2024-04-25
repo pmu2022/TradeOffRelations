@@ -7,10 +7,8 @@ from typing import Sequence
 
 import numpy as np
 
-from .stroh import rot_tensor
-from .stroh import rotate_4th_rank_tensor
-from .stroh import stiffness_tensor_cubic
-from .stroh import stroh_formalism
+from .stroh import (rot_tensor, rotate_4th_rank_tensor, stiffness_tensor_cubic,
+                    stroh_formalism)
 
 __author__ = "Olga Kovalyova"
 __credits__ = ["Max Hodapp", "Franco Moitzi", "Ivan Novikov", "Oleg Peil"]
@@ -80,16 +78,16 @@ def compute_F12(C, theta):
 
     # The following values are already normalized by the K-factor
     sigma_11 = ((a1 * a2) / (a1 - a2)) * (
-            (a2 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
-            - (a1 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
+        (a2 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
+        - (a1 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
     )
     sigma_22 = (1.0 / (a1 - a2)) * (
-            (a1 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
-            - (a2 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
+        (a1 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
+        - (a2 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
     )
     sigma_12 = ((a1 * a2) / (a1 - a2)) * (
-            (1.0 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
-            - (1.0 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
+        (1.0 / np.sqrt(np.cos(theta) + a1 * np.sin(theta)))
+        - (1.0 / np.sqrt(np.cos(theta) + a2 * np.sin(theta)))
     )
 
     s11 = np.real(sigma_11)
@@ -97,7 +95,7 @@ def compute_F12(C, theta):
     s12 = np.real(sigma_12)
 
     F12 = (s22 - s11) * np.sin(theta) * np.cos(theta) + s12 * (
-            np.cos(theta) ** 2 - np.sin(theta) ** 2
+        np.cos(theta) ** 2 - np.sin(theta) ** 2
     )
     return F12
 
@@ -188,6 +186,7 @@ class Orientation:
     """
     Represents crystallographic orientation with axes and angles.
     """
+
     axes: Sequence
     angles: Sequence
 
