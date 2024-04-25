@@ -29,11 +29,6 @@ The `model` directory contains scripts for the VBA model used in the research. I
 - `model_fitter.py`: Python script for fitting the VBA model.
 - `model.py`: Python script containing the VBA model implementation.
 
-## Rice-Thompson model
-
-The `ductility` directory contains scripts for the ductility index from the Rice-Thompson model. The definitions are
-similar to (Mak & Curtin, JMPS 152, 2021).
-
 ## License
 
 This project is licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). See the [LICENSE](LICENSE) file for details.
