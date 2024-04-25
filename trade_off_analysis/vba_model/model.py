@@ -17,8 +17,8 @@ A_to_m = 1e-10
 prefactor = 0.04
 e_prefactor = 2.0
 alpha = 1.0 / 12.0
-epsilon_zero = 10 ** 4
-epsilon = 10 ** -4
+epsilon_zero = 10**4
+epsilon = 10**-4
 tau_prefactor = 0.6
 
 elements = ["Ti", "Cr", "Zr", "Nb", "Mo", "Ta", "W", "V", "Hf"]
@@ -39,33 +39,26 @@ p_v21 = np.poly1d([11.62689882, -53.08459983, 130.52713348, -102.14263859])
 p_v22 = np.poly1d([112.35643006, -874.28133674, 2094.44972552, -1353.36934647])
 p_v23 = np.poly1d([86.0427864, -771.96067217, 2315.77910625, -2052.15884144])
 
-p_v1_usf_110 = Polynomial(
-    [-350313.03508543345, -3181.296908822659, -6179.299674341105]
-)
-p_v2_usf_110 = Polynomial(
-    [251537.34022461734, 123612.7806199297, -44313.18424032652, 9634.3857780443, -639.4836550275356]
-)
+p1 = [-350769.1038239886, -2853.5662932845244, -6232.327396369234]
+p2 = [302561.1287094357, 53385.95837858341, -8777.124452570419, 1784.420589419902]
+p3 = [-380115.49353108235, 10578.27821958051, -6521.148138822875]
+p4 = [373742.39261398365, -6997.418121039415, 8973.25837044404, -244.444017792858]
+p5 = [-5155323.351319714, 283425.3921217114, -27945.170436472486]
+p6 = [6062115.141338895, -1227342.4895198627, 352728.97935198527, -35351.35603358079]
+p7 = [-5070917.435821753, 178247.88892555656, -18396.75138995952]
+p8 = [5673897.134274427, -767293.0208389125, 213224.31097534188, -20405.59966464692]
 
-p_v1_usf_112 = Polynomial(
-    [-374546.76409964013, 6576.5938899101675, -5873.664522043928]
-)
-p_v2_usf_112 = Polynomial(
-    [-249272.6238036164, 850492.1198160906, -424932.17142086854, 95605.8708274814, -7808.277896775813]
-)
+p_v1_usf_110 = Polynomial(p1)
+p_v2_usf_110 = Polynomial(p2)
 
-p_v1_surf_100 = Polynomial(
-    [-5130760.644383087, 280633.62151709583, -27768.271282059217]
-)
-p_v2_surf_100 = Polynomial(
-    [6346911.443292073, -1662099.1910102053, 579360.5740563979, -86503.8010339452, 4240.875012556959]
-)
+p_v1_usf_112 = Polynomial(p3)
+p_v2_usf_112 = Polynomial(p4)
 
-p_v1_surf_110 = Polynomial(
-    [-4994595.939046706, 169573.2704583634, -17847.088509649857]
-)
-p_v2_surf_110 = Polynomial(
-    [6558819.146217844, -2118173.535614354, 917416.3435976981, -179347.00527665336, 13177.29065572234]
-)
+p_v1_surf_100 = Polynomial(p5)
+p_v2_surf_100 = Polynomial(p6)
+
+p_v1_surf_110 = Polynomial(p7)
+p_v2_surf_110 = Polynomial(p8)
 
 
 def width_corr_dict(elem, k1, k2):
@@ -79,11 +72,11 @@ def calculate_tau_yield_zero(prefactor, alpha, mu, nu, delta):
     Calculates the tau yield
     """
     return (
-            prefactor
-            * alpha ** (-1.0 / 3.0)
-            * mu
-            * ((1 + nu) / (1 - nu)) ** (4.0 / 3.0)
-            * delta ** (4.0 / 3.0)
+        prefactor
+        * alpha ** (-1.0 / 3.0)
+        * mu
+        * ((1 + nu) / (1 - nu)) ** (4.0 / 3.0)
+        * delta ** (4.0 / 3.0)
     )
 
 
@@ -93,31 +86,30 @@ def calculate_delta_e_b(prefactor, alpha, mu, nu, delta, burgers):
     """
 
     burgers_converted = burgers * A_to_m  # Units m
-    mu_converted = mu * 10 ** 9  # Pascal
+    mu_converted = mu * 10**9  # Pascal
 
     return (
-            prefactor
-            * alpha ** (1.0 / 3.0)
-            * mu_converted
-            * burgers_converted ** 3.0
-            * ((1 + nu) / (1 - nu)) ** (2.0 / 3.0)  # no units
-            * delta ** (2.0 / 3.0)
+        prefactor
+        * alpha ** (1.0 / 3.0)
+        * mu_converted
+        * burgers_converted**3.0
+        * ((1 + nu) / (1 - nu)) ** (2.0 / 3.0)  # no units
+        * delta ** (2.0 / 3.0)
     )  # no units
 
 
 def high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon):
     """High stress/lower temperature"""
     return tau_zero * (
-            1.0
-            - ((kB * temperature / ene_b) * np.log(epsilon_zero / epsilon)) ** (2.0 / 3.0)
+        1.0
+        - ((kB * temperature / ene_b) * np.log(epsilon_zero / epsilon)) ** (2.0 / 3.0)
     )
 
 
 def low_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon):
     """Low stress/high temperature"""
     return tau_zero * np.exp(
-        -1 / 0.55 * (kB * temperature / ene_b) *
-        np.log(epsilon_zero / epsilon)
+        -1 / 0.55 * (kB * temperature / ene_b) * np.log(epsilon_zero / epsilon)
     )
 
 
@@ -254,7 +246,7 @@ def calc_vba_tau_sss(concs, eles, temperature=300):
 
     misfit_volumes, equilibrium_volume = calc_vba_misfits(concs[args], eles[args])
 
-    delta = np.sqrt(np.sum(concs[args] @ misfit_volumes ** 2)) / (equilibrium_volume)
+    delta = np.sqrt(np.sum(concs[args] @ misfit_volumes**2)) / (equilibrium_volume)
 
     burgers = np.cbrt(2.0 * equilibrium_volume) * np.sqrt(3) / 2
 
@@ -273,8 +265,14 @@ def calc_vba_tau_sss(concs, eles, temperature=300):
 
     ene_b = calculate_delta_e_b(e_prefactor, alpha, mu, nu, delta, burgers)
 
-    tau_ht = high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon) * 1000
-    tau_lt = high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon) * 1000
+    tau_ht = (
+        high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon)
+        * 1000
+    )
+    tau_lt = (
+        high_stress_tau_yield(tau_zero, temperature, ene_b, epsilon_zero, epsilon)
+        * 1000
+    )
 
     factor = tau_ht / tau_zero
 
