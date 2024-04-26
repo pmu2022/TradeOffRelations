@@ -27,7 +27,7 @@ rows = np.array([3, 3, 4, 4, 4, 5, 5, 3, 5], dtype=int)
 
 valences_dict = {e: v for e, v in zip(elements, valences)}
 rows_dict = {e: v for e, v in zip(elements, rows)}
-widths = np.array([0.414, 0.397, 0.614, 0.667, 0.651, 0.783, 0.773, 0.418, 0.560])
+widths = np.array([0.414, 0.397, 0.614, 0.667, 0.651, 0.783, 0.773, 0.418, 0.715])
 
 widths_dict = {e: v for e, v in zip(elements, widths)}
 
@@ -198,7 +198,7 @@ def calc_vba_misfits(concs, eles):
             8.275e00,
             7.245e00,
             4.797e00,
-            3.997e00,
+            7.150e00,
         ]
     )
 
