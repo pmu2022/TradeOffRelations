@@ -2,10 +2,10 @@
 # Copyright (c) Materials Center Leoben Forschung GmbH (MCL)
 
 
-from trade_off_analysis.vba_model.model import calc_vba_elastic, calc_vba_misfits, compute_vba_surf, compute_vba_usf, \
+from vba_model.model import calc_vba_elastic, calc_vba_misfits, compute_vba_surf, compute_vba_usf, \
     calc_vba_tau_sss
-from trade_off_analysis.vba_model.model import p_v1_surf_110, p_v2_surf_110
-from trade_off_analysis.vba_model.model import p_v1_usf_112, p_v2_usf_112
+from vba_model.model import p_v1_surf_110, p_v2_surf_110
+from vba_model.model import p_v1_usf_112, p_v2_usf_112
 
 __author__ = "Franco Moitzi"
 __copyright__ = "Copyright 2020-, Materials Center Leoben Forschung GmbH"
